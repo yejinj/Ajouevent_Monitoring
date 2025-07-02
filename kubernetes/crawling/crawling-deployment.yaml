@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crawling-config
+  namespace: ajouevent
+data:
+  config.yaml: |
+    database:
+      host: mysql-service
+      port: 3306
+      username: ajouevent
+      password: ajouevent123
+      dbname: ajouevent
+    redis:
+      host: redis-service
+      port: 6379
+    crawler:
+      interval: 3600
+      timeout: 30
+    logging:
+      level: info
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crawling-service
+  namespace: ajouevent
+spec:
+  selector:
+    app: crawling
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawling
+  namespace: ajouevent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crawling
+  template:
+    metadata:
+      labels:
+        app: crawling
+    spec:
+      containers:
+      - name: crawling
+        image: ajouevent_crawling:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MYSQL_HOST
+          value: "mysql-service"
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: CONFIG_PATH
+          value: "/app/config/config.yaml"
+        volumeMounts:
+        - name: crawling-config
+          mountPath: /app/config/config.yaml
+          subPath: config.yaml
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+      volumes:
+      - name: crawling-config
+        configMap:
+          name: crawling-config
