@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawler
+  namespace: ajouevent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crawler
+  template:
+    metadata:
+      labels:
+        app: crawler
+    spec:
+      containers:
+      - name: crawler
+        image: ajouevent/crawler:latest
+        ports:
+        - containerPort: 1323
+          name: http
+        env:
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: ajouevent-config
+              key: mysql-host
+        - name: MYSQL_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: ajouevent-config
+              key: mysql-port
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: ajouevent-config
+              key: mysql-database
+        - name: MYSQL_USER
+          value: "ajouevent"
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ajouevent-secret
+              key: mysql-password
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: ajouevent-config
+              key: redis-host
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: ajouevent-config
+              key: redis-port
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: ajouevent-config
+              key: timezone
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "125m"
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 1323
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 1323
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+        volumeMounts:
+        - name: logs
+          mountPath: /workspace/logs
+      volumes:
+      - name: logs
+        emptyDir: {}
+      imagePullSecrets:
+      - name: regcred 

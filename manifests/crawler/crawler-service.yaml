@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: crawler-service
+  namespace: ajouevent
+  labels:
+    app: crawler
+spec:
+  selector:
+    app: crawler
+  ports:
+  - port: 1323
+    targetPort: 1323
+    name: http
+  type: ClusterIP 
