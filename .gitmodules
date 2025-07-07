@@ -1,0 +1,6 @@
+[submodule "backend-src"]
+	path = backend-src
+	url = https://github.com/AjouEvent/AjouEvent_BE
+[submodule "crawler-src"]
+	path = crawler-src
+	url = https://github.com/AjouEvent/AjouEvent_Crawling
