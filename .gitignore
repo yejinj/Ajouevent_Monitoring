@@ -41,4 +41,7 @@ pids
 mock-firebase-key.json
 *.pem
 *.key
-*-key.json 
+*-key.json
+
+# Backend environment variables
+manifests/backend/backend-deployment.yaml 
