@@ -19,13 +19,14 @@ resources:
   - manifests/redis/redis-service.yaml
   
   # Backend 구성
+  - manifests/backend/backend-config.yaml
   - manifests/backend/backend-deployment.yaml
   - manifests/backend/backend-service.yaml
   
   # Crawler 구성
   - manifests/crawler/crawler-deployment.yaml
   - manifests/crawler/crawler-service.yaml
-
+  
 namespace: ajouevent
 
 commonLabels:
