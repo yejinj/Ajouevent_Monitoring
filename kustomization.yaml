@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # Base 구성
+  - manifests/base/namespace.yaml
+  - manifests/base/configmap.yaml
+  - manifests/base/secret.yaml
+  
+  # MySQL 구성
+  - manifests/mysql/mysql-pvc.yaml
+  - manifests/mysql/mysql-statefulset.yaml
+  - manifests/mysql/mysql-service.yaml
+  
+  # Redis 구성
+  - manifests/redis/redis-deployment.yaml
+  - manifests/redis/redis-service.yaml
+  
+  # Backend 구성
+  - manifests/backend/backend-deployment.yaml
+  - manifests/backend/backend-service.yaml
+  
+  # Crawler 구성
+  - manifests/crawler/crawler-deployment.yaml
+  - manifests/crawler/crawler-service.yaml
+
+namespace: ajouevent
+
+commonLabels:
+  project: ajouevent
+  environment: production 
