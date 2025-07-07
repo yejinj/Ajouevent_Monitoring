@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: ajouevent
+data:
+  # Discord 설정
+  DISCORD_NAME: "ajouevent-discord"
+  DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/mock"
+  
+  # JWT 설정
+  SPRING_JWT_TOKEN_ACCESS_EXPIRATION_TIME: "3600000"
+  SPRING_JWT_TOKEN_REFRESH_EXPIRATION_TIME: "604800000"
+  SPRING_JWT_TOKEN_ISSUER: "ajouevent"
+  
+  # FCM 설정
+  FCM_CERTIFICATION: "firebase/mock-firebase-key.json"
+  
+  # SMTP 설정
+  SMTP_MAIL_USERNAME: "mock@ajouevent.com"
+  SMTP_MAIL_PASSWORD: "mock-password"
+  
+  # AWS S3 설정
+  CLOUD_AWS_CREDENTIALS_ACCESSKEY: "mock-access-key"
+  CLOUD_AWS_CREDENTIALS_SECRETKEY: "mock-secret-key"
+  CLOUD_AWS_S3_BUCKETNAME: "mock-bucket"
+  CLOUD_AWS_S3_BUCKET: "mock-bucket"
+  CLOUD_AWS_REGION_STATIC: "ap-northeast-2"
+  
+  # OAuth 설정
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID: "mock-client-id"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET: "mock-client-secret"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_AUTHORIZATION_GRANT_TYPE: "authorization_code"
+  
+  # JPA/Hibernate 설정
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+  SPRING_JPA_DATABASE_PLATFORM: "org.hibernate.dialect.MySQL8Dialect"
+  SPRING_JPA_SHOW_SQL: "false" 

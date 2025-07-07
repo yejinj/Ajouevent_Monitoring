@@ -21,11 +21,19 @@ spec:
         - containerPort: 8080
           name: http
         env:
+        # 기본 Spring 설정
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
             configMapKeyRef:
               name: ajouevent-config
               key: spring-profiles-active
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: ajouevent-config
+              key: timezone
+        
+        # 데이터베이스 설정
         - name: SPRING_DATASOURCE_URL
           value: "jdbc:mysql://mysql-service:3306/ajouevent?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
         - name: SPRING_DATASOURCE_USERNAME
@@ -35,59 +43,8 @@ spec:
             secretKeyRef:
               name: ajouevent-secret
               key: mysql-password
-        - name: SPRING_REDIS_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: ajouevent-config
-              key: redis-host
-        - name: SPRING_REDIS_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: ajouevent-config
-              key: redis-port
-        - name: MYSQL_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: ajouevent-config
-              key: mysql-host
-        - name: MYSQL_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: ajouevent-config
-              key: mysql-port
-        - name: MYSQL_DATABASE
-          valueFrom:
-            configMapKeyRef:
-              name: ajouevent-config
-              key: mysql-database
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: ajouevent-secret
-              key: jwt-secret
-        - name: TZ
-          valueFrom:
-            configMapKeyRef:
-              name: ajouevent-config
-              key: timezone
-        # Discord 설정
-        - name: DISCORD_NAME
-          value: "ajouevent-discord"
-        - name: DISCORD_WEBHOOK_URL
-          value: "https://discord.com/api/webhooks/mock"
-        # JWT 설정 수정
-        - name: SPRING_JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: ajouevent-secret
-              key: jwt-secret
-        - name: SPRING_JWT_TOKEN_ACCESS_EXPIRATION_TIME
-          value: "3600000"
-        - name: SPRING_JWT_TOKEN_REFRESH_EXPIRATION_TIME
-          value: "604800000"
-        - name: SPRING_JWT_TOKEN_ISSUER
-          value: "ajouevent"
-        # Redis 설정 수정
+        
+        # Redis 설정
         - name: SPRING_DATA_REDIS_HOST
           valueFrom:
             configMapKeyRef:
@@ -98,39 +55,17 @@ spec:
             configMapKeyRef:
               name: ajouevent-config
               key: redis-port
-        # FCM 설정
-        - name: FCM_CERTIFICATION
-          value: "firebase/mock-firebase-key.json"
-        # SMTP 설정 (선택적)
-        - name: SMTP_MAIL_USERNAME
-          value: "mock@ajouevent.com"
-        - name: SMTP_MAIL_PASSWORD
-          value: "mock-password"
-        # AWS S3 설정 (선택적)
-        - name: CLOUD_AWS_CREDENTIALS_ACCESSKEY
-          value: "mock-access-key"
-        - name: CLOUD_AWS_CREDENTIALS_SECRETKEY
-          value: "mock-secret-key"
-        - name: CLOUD_AWS_S3_BUCKETNAME
-          value: "mock-bucket"
-        - name: CLOUD_AWS_S3_BUCKET
-          value: "mock-bucket"
-        - name: CLOUD_AWS_REGION_STATIC
-          value: "ap-northeast-2"
-        # OAuth 설정 (선택적)
-        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID
-          value: "mock-client-id"
-        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET
-          value: "mock-client-secret"
-        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_AUTHORIZATION_GRANT_TYPE
-          value: "authorization_code"
-        # JPA/Hibernate 설정
-        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-          value: "update"
-        - name: SPRING_JPA_DATABASE_PLATFORM
-          value: "org.hibernate.dialect.MySQL8Dialect"
-        - name: SPRING_JPA_SHOW_SQL
-          value: "false"
+        
+        - name: SPRING_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: ajouevent-secret
+              key: jwt-secret
+        
+        envFrom:
+        - configMapRef:
+            name: backend-config
+        
         resources:
           requests:
             memory: "512Mi"
@@ -138,26 +73,14 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
-        # livenessProbe:
-        #   httpGet:
-        #     path: /actuator/health
-        #     port: 8080
-        #   initialDelaySeconds: 60
-        #   periodSeconds: 30
-        #   timeoutSeconds: 5
-        # readinessProbe:
-        #   httpGet:
-        #     path: /actuator/health
-        #     port: 8080
-        #   initialDelaySeconds: 20
-        #   periodSeconds: 10
-        #   timeoutSeconds: 3
+        
         volumeMounts:
         - name: logs
           mountPath: /app/logs
         - name: firebase-config
           mountPath: /app/firebase
           readOnly: true
+      
       volumes:
       - name: logs
         emptyDir: {}
