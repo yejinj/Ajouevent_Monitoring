@@ -6,8 +6,10 @@ resources:
   - manifests/base/namespace.yaml
   - manifests/base/configmap.yaml
   - manifests/base/secret.yaml
+  - manifests/base/storageclass.yaml
   
   # MySQL 구성
+  - manifests/mysql/mysql-pv.yaml
   - manifests/mysql/mysql-pvc.yaml
   - manifests/mysql/mysql-statefulset.yaml
   - manifests/mysql/mysql-service.yaml

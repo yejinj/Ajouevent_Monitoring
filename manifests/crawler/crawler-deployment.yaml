@@ -15,29 +15,30 @@ spec:
     spec:
       containers:
       - name: crawler
-        image: ajouevent/crawler:latest
+        image: ajouevent/crawler:fixed
+        imagePullPolicy: Never
         ports:
         - containerPort: 1323
           name: http
         env:
-        - name: MYSQL_HOST
+        - name: DB_IP
           valueFrom:
             configMapKeyRef:
               name: ajouevent-config
               key: mysql-host
-        - name: MYSQL_PORT
+        - name: DB_PORT
           valueFrom:
             configMapKeyRef:
               name: ajouevent-config
               key: mysql-port
-        - name: MYSQL_DATABASE
+        - name: DB_NAME
           valueFrom:
             configMapKeyRef:
               name: ajouevent-config
               key: mysql-database
-        - name: MYSQL_USER
+        - name: DB_USER
           value: "ajouevent"
-        - name: MYSQL_PASSWORD
+        - name: DB_PW
           valueFrom:
             secretKeyRef:
               name: ajouevent-secret
@@ -57,6 +58,10 @@ spec:
             configMapKeyRef:
               name: ajouevent-config
               key: timezone
+        - name: CRAWLING_PERIOD
+          value: "60"
+        - name: WEBHOOK_ENDPOINT
+          value: "http://backend-service:8080/api/crawling/webhook"
         resources:
           requests:
             memory: "256Mi"
@@ -84,5 +89,4 @@ spec:
       volumes:
       - name: logs
         emptyDir: {}
-      imagePullSecrets:
-      - name: regcred 
+ 

@@ -35,4 +35,10 @@ pids
 
 # Temporary files
 *.tmp
-*.temp 
+*.temp
+
+# Security - Mock keys and certificates
+mock-firebase-key.json
+*.pem
+*.key
+*-key.json 
