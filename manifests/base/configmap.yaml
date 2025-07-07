@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ajouevent-config
+  namespace: ajouevent
+data:
+  # MySQL 설정
+  mysql-host: "mysql-service.ajouevent.svc.cluster.local"
+  mysql-port: "3306"
+  mysql-database: "ajouevent"
+  
+  # Redis 설정
+  redis-host: "redis-service.ajouevent.svc.cluster.local"
+  redis-port: "6379"
+  
+  # 애플리케이션 설정
+  spring-profiles-active: "prod"
+  timezone: "Asia/Seoul" 
